@@ -1,0 +1,12 @@
+{
+  "name": "simple_chat_room",
+  "description": "Simple chat room",
+  "version": "0.0.1",
+  "dependences": {
+    "express": "4.9.6"
+  },
+  "dependencies": {
+    "express": "4.15.3",
+    "socket.io": "^2.0.3"
+  }
+}
