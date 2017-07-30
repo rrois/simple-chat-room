@@ -1,7 +1,19 @@
+<!doctype html>
 <html>
+
 <head>
+    <title>Simple Chat Room</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://localhost:8080');
+        socket.on('newConnection', function (data) {
+            alert(data.welcomeMessage);
+        });
+    </script>
 </head>
+
 <body>
-<h1> Working... </h1>
+    <h1> Working... </h1>
 </body>
+
 </html>
