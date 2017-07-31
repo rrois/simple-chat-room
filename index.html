@@ -3,17 +3,142 @@
 
 <head>
     <title>Simple Chat Room</title>
+
+    <style>
+        body {
+            font-family: "Roboto Condensed", sans-serif;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 500px;
+        }
+
+        .chat-panel {
+            display: flex;
+            align-items: stretch;
+            min-width: 600px;
+            width: calc(100% - 100px);
+            height: 100%;
+            border-radius: 4px;
+            border: 2px solid grey;
+        }
+
+        .user-block {
+            min-width: 100px;
+            width: 25%;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            border-right: 2px solid grey;
+            background-color: #faf6fb;
+        }
+
+        .message-block {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .conversation {
+            height: calc(100% - 30px);
+        }
+
+        .message-chat {
+            padding-left: 12px;
+            margin-right: 12px;
+        }
+
+        .message-chat li {
+            background-color: #f6f2f7;
+            border-radius: 8px;
+            padding: 8px 8px;
+            margin-top: 8px;
+        }
+
+        .chat-bar {
+            display: flex;
+            align-items: stretch;
+            height: 30px;
+            border-top: 2px solid grey;
+        }
+
+        .chat-bar input {
+            width: calc(100% - 30px);
+            height: 30px;
+            border: 0px;
+            padding: 0px 6px;
+        }
+
+        .chat-bar button {
+            width: 70px;
+            height: 30px;
+            background-color: #5b575c;
+            color: white;
+            border: 0px;
+        }
+    </style>
+
+    <script src="http://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+        crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
+
     <script>
-        var socket = io.connect('http://localhost:8080');
-        socket.on('newConnection', function (data) {
-            alert(data.welcomeMessage);
+        $(function () {
+            var socket = io.connect('http://localhost:8080');
+
+            // Se escucha el evento de conexión
+            socket.on('newConnection', function (data) {
+                alert(data.welcomeMessage);
+            });
+
+            // Se escucha un nuevo mensaje
+            socket.on('message', function (data) {
+                $("#messageChat").append('<li>' + data + '</li>');
+                console.log(data);
+            });
+
+            $("#sendMessage").submit(function (event) {
+                // Previene el comportamiento del formulario
+                event.preventDefault();
+
+                // Se recupera el mensaje y se emite el evento
+                var message = $("#message").val();
+                socket.emit('message', message);
+                $("#message").val('');
+            });
         });
     </script>
 </head>
 
 <body>
-    <h1> Working... </h1>
+    <div class="container">
+        <h1> Simple Chat Room </h1>
+        <div class="chat-panel">
+            <div class="user-block"></div>
+            <div class="message-block">
+                <div class="conversation">
+                    <ul id="messageChat" class="message-chat">
+                        <li>test</li>
+                    </ul>
+                </div>
+                <div>
+                    <form id="sendMessage" action="" class="chat-bar">
+                        <input type="text" id="message" autocomplete="off" required/>
+                        <button>Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
