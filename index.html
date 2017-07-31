@@ -64,7 +64,7 @@
             padding-left: 12px;
             margin-right: 12px;
             margin-top: 0px;
-            overflow-y: scroll;
+            overflow-y: auto;
         }
 
         .message-chat li {
@@ -120,7 +120,6 @@
             // Se escucha un nuevo mensaje
             socket.on('message', function (data) {
                 $("#messageChat").append('<li>' + data + '</li>');
-                console.log(data);
             });
 
             $("#sendMessage").submit(function (event) {
@@ -149,7 +148,7 @@
                 </div>
                 <div>
                     <form id="sendMessage" action="" class="chat-bar">
-                        <input type="text" id="message" autocomplete="off" required/>
+                        <input type="text" id="message" placeholder="Introduce tu mensaje" autocomplete="off" required/>
                         <button>Enviar</button>
                     </form>
                 </div>
