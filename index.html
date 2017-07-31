@@ -41,6 +41,12 @@
             background-color: #faf6fb;
         }
 
+        .user-block li {
+            color: #bbc7a6;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
         .message-block {
             display: flex;
             flex-direction: column;
@@ -122,6 +128,19 @@
                 $("#messageChat").append('<li>' + data + '</li>');
             });
 
+            // Se escucha la unión del nuevo usuario
+            socket.on('userJoin', function (userName) {
+                var chatUser = $("<li data-name='" + userName + "'>" + userName + '</li>');
+                $("#chatUsers").append(chatUser);
+                console.log('nuevo usuario:' + chatUser);
+            });
+
+            // Se escucha la desconexión del usuario
+            socket.on('disconnectedUser', function (userName) {
+                $("#chatUsers li[data-name=" + userName + "]").remove();
+                console.log('usuario desconectado:' + userName);
+            });
+
             $("#sendMessage").submit(function (event) {
                 // Previene el comportamiento del formulario
                 event.preventDefault();
@@ -139,7 +158,10 @@
     <div class="container">
         <h1> Simple Chat Room </h1>
         <div class="chat-panel">
-            <div class="user-block"></div>
+            <div class="user-block">
+                <ul id="chatUsers">
+                </ul>
+            </div>
             <div class="message-block">
                 <div class="conversation">
                     <span id="welcomeMessage" class="status-message">Conectando...</span>

@@ -16,7 +16,16 @@ var storeMessages = function (userName, data) {
     }
 };
 
-io.on('connection', function (client) {
+var users = [];
+
+// Función que guarda la lista de usuarios de la sala de chat
+var storeConnectedUsers = function (userName) {
+    if (users.indexOf(userName) === -1) {
+        users.push(userName);
+    }
+};
+
+io.sockets.on('connection', function (client) {
     console.log('Cliente conectado...');
 
     // Emite el evento 'newConnection' en el cliente(navegador)
@@ -28,11 +37,21 @@ io.on('connection', function (client) {
 
         client.userName = userName;
 
+        // Se envía a todos la conexión del nuevo usuario
+        client.broadcast.emit('userJoin', userName);
+        client.emit('userJoin', userName);
+
+        users.forEach(function (userName) {
+            client.emit('userJoin', userName);
+        });
+
+        // Se guarda el usuario en la lista de usuarios conectados
+        storeConnectedUsers(userName);
+
         // Se muestran los últimos mensajes al nuevo usuario de la sala de chat
         messages.forEach(function (message) {
             client.emit('message', message.userName + ': ' + message.data);
         });
-
     });
 
     // Escucha el evento 'message'
@@ -45,6 +64,16 @@ io.on('connection', function (client) {
 
         // Se envía el mismo mensaje a nuestro cliente
         client.emit('message', client.userName + ': ' + data);
+    });
+
+    // Escucha la desconexión del usuario
+    client.on('disconnect', function () {
+        console.log(client.userName +' se ha desconectado');
+        var index = users.indexOf(client.userName);
+        if (index > -1) {
+            users.splice(index, 1);
+            client.broadcast.emit('disconnectedUser', client.userName);
+        }
     });
 });
 
