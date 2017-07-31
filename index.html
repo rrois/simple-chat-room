@@ -49,12 +49,22 @@
         }
 
         .conversation {
+            display: flex;
+            flex-direction: column;
             height: calc(100% - 30px);
+        }
+
+        .status-message {
+            padding: 8px 8px;
+            font-size: 18px;
+            color: #c0d0d8;
         }
 
         .message-chat {
             padding-left: 12px;
             margin-right: 12px;
+            margin-top: 0px;
+            overflow-y: scroll;
         }
 
         .message-chat li {
@@ -97,7 +107,14 @@
 
             // Se escucha el evento de conexión
             socket.on('newConnection', function (data) {
-                alert(data.welcomeMessage);
+                // Se muestra el mensaje de bienvenida al chat
+                $("#welcomeMessage").text(data.welcomeMessage);
+
+                // Se solicita un nombre de usuario
+                var userName = prompt("Introduce tu nombre de usuario:");
+
+                // Se emite el evento de unirse a la sala de chat
+                socket.emit('join', userName);
             });
 
             // Se escucha un nuevo mensaje
@@ -126,8 +143,8 @@
             <div class="user-block"></div>
             <div class="message-block">
                 <div class="conversation">
+                    <span id="welcomeMessage" class="status-message">Conectando...</span>
                     <ul id="messageChat" class="message-chat">
-                        <li>test</li>
                     </ul>
                 </div>
                 <div>

@@ -7,17 +7,22 @@ io.on('connection', function (client) {
     console.log('Client connected...');
 
     // Emite el evento 'newConnection' en el cliente(navegador)
-    client.emit('newConnection', { welcomeMessage: 'Te has unido al chat.' });
+    client.emit('newConnection', { welcomeMessage: 'Bienvenido al chat.' });
+
+    // Escucha el evento de unirse al chat    
+    client.on('join', function (userName) {
+        client.userName = userName;
+    });
 
     // Escucha el evento 'message'
     client.on('message', function (data) {
         // Broadcast del mensaje
-        client.broadcast.emit('message', data);
+        client.broadcast.emit('message', client.userName + ': ' + data);
 
         // Se envía el mismo mensaje a nuestro cliente
-        client.emit('message', data);
+        client.emit('message', client.userName + ': ' + data);
 
-        console.log(data);
+        console.log(client.userName + ': ' + data);
     });
 });
 
