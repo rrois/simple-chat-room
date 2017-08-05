@@ -77,6 +77,9 @@ io.sockets.on('connection', function (client) {
     });
 });
 
+// Middleware de recursos estáticos
+app.use(express.static('public'));
+
 app.get('/', function (request, response) {
     response.sendFile(__dirname + '/index.html');
 });
